@@ -243,6 +243,7 @@ class Esb(_PluginBase):
         if not text:
             return
         # TODO: 完善逻辑
+        self.post_message(channel=channel, title="success!", userid=userid)
 
     def stop_service(self):
         """
