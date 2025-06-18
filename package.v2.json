@@ -469,5 +469,17 @@
     "history": {
       "v1.0": "新增LexiAnnot"
     }
+  },
+  "Esb": {
+    "name": "Esb",
+    "description": "消息桥梁服务，信息转发至其他服务。",
+    "labels": "消息转发",
+    "version": "0.0.1",
+    "icon": "Chatgpt_A.png",
+    "author": "jxxghp",
+    "level": 1,
+    "history": {
+      "0.0.1": "初始版本"
+    }
   }
 }
