@@ -39,6 +39,7 @@ class Esb(_PluginBase):
 
     def init_plugin(self, config: dict = None):
         if config:
+            logger.info(f"ESB插件加载中")
             self._enabled = config.get("enabled")
             self._proxy = config.get("proxy")
             self._compatible = config.get("compatible")
@@ -234,8 +235,6 @@ class Esb(_PluginBase):
         监听用户消息，获取ChatGPT回复
         """
         if not self._enabled:
-            return
-        if not self.openai:
             return
         text = event.event_data.get("text")
         userid = event.event_data.get("userid")
