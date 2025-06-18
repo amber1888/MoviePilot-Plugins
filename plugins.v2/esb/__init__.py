@@ -240,7 +240,6 @@ class Esb(_PluginBase):
         text = event.event_data.get("text")
         userid = event.event_data.get("userid")
         channel = event.event_data.get("channel")
-        logger.info(f"接收到消息：{text}")
         if not text:
             return
         # TODO: 完善逻辑
