@@ -30,25 +30,11 @@ class Esb(_PluginBase):
     # 私有属性
     openai = None
     _enabled = False
-    _proxy = False
-    _compatible = False
-    _recognize = False
-    _openai_url = None
-    _openai_key = None
-    _model = None
 
     def init_plugin(self, config: dict = None):
         if config:
             logger.info(f"ESB插件加载中")
             self._enabled = config.get("enabled")
-            self._proxy = config.get("proxy")
-            self._compatible = config.get("compatible")
-            self._recognize = config.get("recognize")
-            self._openai_url = config.get("openai_url")
-            self._openai_key = config.get("openai_key")
-            self._model = config.get("model")
-            if self._openai_url and self._openai_key:
-                pass
 
     def get_state(self) -> bool:
         return self._enabled
@@ -86,109 +72,6 @@ class Esb(_PluginBase):
                                         }
                                     }
                                 ]
-                            },
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VSwitch',
-                                        'props': {
-                                            'model': 'proxy',
-                                            'label': '使用代理服务器',
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VSwitch',
-                                        'props': {
-                                            'model': 'compatible',
-                                            'label': '兼容模式',
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VSwitch',
-                                        'props': {
-                                            'model': 'recognize',
-                                            'label': '辅助识别',
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        'component': 'VRow',
-                        'content': [
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VTextField',
-                                        'props': {
-                                            'model': 'openai_url',
-                                            'label': 'OpenAI API Url',
-                                            'placeholder': 'https://api.openai.com',
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VTextField',
-                                        'props': {
-                                            'model': 'openai_key',
-                                            'label': 'sk-xxx'
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VTextField',
-                                        'props': {
-                                            'model': 'model',
-                                            'label': '自定义模型',
-                                            'placeholder': 'gpt-3.5-turbo',
-                                        }
-                                    }
-                                ]
                             }
                         ]
                     },
@@ -217,13 +100,7 @@ class Esb(_PluginBase):
                 ]
             }
         ], {
-            "enabled": False,
-            "proxy": False,
-            "compatible": False,
-            "recognize": False,
-            "openai_url": "https://api.openai.com",
-            "openai_key": "",
-            "model": "gpt-3.5-turbo"
+            "enabled": False
         }
 
     def get_page(self) -> List[dict]:
