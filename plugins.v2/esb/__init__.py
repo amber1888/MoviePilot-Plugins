@@ -34,7 +34,6 @@ class Esb(_PluginBase):
 
     def init_plugin(self, config: dict = None):
         if config:
-            logger.info(f"ESB插件加载中")
             self._enabled = config.get("enabled")
 
     def get_state(self) -> bool:
@@ -109,9 +108,6 @@ class Esb(_PluginBase):
 
     @eventmanager.register(EventType.UserMessage)
     def talk(self, event: Event):
-        """
-        监听用户消息，获取ChatGPT回复
-        """
         if not self._enabled:
             return
         text = event.event_data.get("text")
@@ -121,11 +117,11 @@ class Esb(_PluginBase):
         if not text:
             return
         # 必须esb开头
-        if not text.startswith("esb-"):
+        if not text.startswith("jm"):
             return
 
-        text = text.replace("esb-", "")
-        logger.info(f"<UNK>: {text}")
+        text = text.replace("jm", "").replace("jm ", "")
+        logger.info(f"接收禁漫号: {text}。开始调用下载器")
 
         client = JmClient(text)
         flag, response = client.download()
