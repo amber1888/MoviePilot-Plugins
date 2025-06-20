@@ -5,6 +5,7 @@ from app.core.event import eventmanager, Event
 from app.log import logger
 from app.plugins import _PluginBase
 from app.schemas.types import EventType
+from app.plugins.esb.jm import JmClient
 
 
 class Esb(_PluginBase):
@@ -15,7 +16,7 @@ class Esb(_PluginBase):
     # 插件图标
     plugin_icon = "Chatgpt_A.png"
     # 插件版本
-    plugin_version = "0.0.1"
+    plugin_version = "0.0.2"
     # 插件作者
     plugin_author = "songYu"
     # 作者主页
@@ -120,7 +121,13 @@ class Esb(_PluginBase):
         if not text:
             return
         # TODO: 完善逻辑
-        self.post_message(channel=channel, title="success!", userid=userid)
+
+        client = JmClient(text)
+        flag, response = client.download()
+        if flag:
+            self.post_message(channel=channel, title="success!", userid=userid)
+        else:
+            self.post_message(channel=channel, title=response, userid=userid)
 
     def stop_service(self):
         """
