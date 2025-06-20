@@ -124,6 +124,7 @@ class Esb(_PluginBase):
 
         client = JmClient(text)
         flag, response = client.download()
+        logger.info(flag, response)
         if flag:
             self.post_message(channel=channel, title="success!", userid=userid)
         else:
