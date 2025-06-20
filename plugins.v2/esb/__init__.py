@@ -143,7 +143,7 @@ class Esb(_PluginBase):
                 data = {"tag": str(inputs[0]), "page": int(page)}
             else:
                 data = {"tag": str(text), "page": page}
-            logger.info("请求参数: {}", data)
+            logger.info("请求参数: %s" % data)
             res = RequestUtils(
                 timeout=10,
                 content_type="application/json"
