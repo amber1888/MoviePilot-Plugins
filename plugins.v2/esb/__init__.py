@@ -132,10 +132,18 @@ class Esb(_PluginBase):
                 url='http://192.168.1.96:18000/download-album',
                 json=data
             )
+            if res:
+                self.post_message(channel=channel, title="请求下载成功", userid=userid)
         else:
             text = text.replace("?", "")
             logger.info(f"开始搜索tag: {text}")
-            data = {"tag": str(text)}
+            page = 1
+            if "/" in text:
+                inputs = text.split("/")
+                data = {"tag": str(inputs[0]), "page": page}
+            else:
+                data = {"tag": str(text), "page": page}
+            logger.info("请求参数: {}", data)
             res = RequestUtils(
                 timeout=10,
                 content_type="application/json"
@@ -143,17 +151,17 @@ class Esb(_PluginBase):
                 url='http://192.168.1.96:18000/query-album',
                 json=data
             )
-        logger.info(f"<UNK>: {res}")
-        try:
-            if res:
-                ret_json = res.json()
-                response = ""
-                for album in ret_json["result"]:
-                    response += "%s:%s\n" % (album["album_id"], album["title"])
-                logger.info(f"返回：{response}")
-                self.post_message(channel=channel, title=response, userid=userid)
-        except Exception as e:
-            logger.error(e)
+            logger.info(f"下载器请求返回: {res}")
+            try:
+                if res:
+                    ret_json = res.json()
+                    response = ""
+                    for album in ret_json["result"]:
+                        response += "%s:%s\n" % (album["album_id"], album["title"])
+                    logger.info(f"返回：{response}")
+                    self.post_message(channel=channel, title=response, userid=userid)
+            except Exception as e:
+                logger.error(e)
 
     def stop_service(self):
         """
