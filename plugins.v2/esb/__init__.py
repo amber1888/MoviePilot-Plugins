@@ -121,9 +121,9 @@ class Esb(_PluginBase):
         if not text:
             return
         # 必须esb开头
-        if not text.startswith("esb"):
+        if not text.startswith("esb-"):
             return
-        text.replace("esb", "").replace("jm", "")
+        text = text.replace("esb-", "")
 
         client = JmClient(text)
         flag, response = client.download()
