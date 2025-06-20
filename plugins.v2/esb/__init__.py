@@ -147,7 +147,7 @@ class Esb(_PluginBase):
         if res:
             ret_json = res.json()
             logger.info(f"返回：{ret_json}")
-            self.post_message(channel=channel, title=ret_json['result'], userid=userid)
+            self.post_message(channel=channel, title=json.dumps(ret_json['result']), userid=userid)
 
     def stop_service(self):
         """
