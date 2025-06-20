@@ -16,7 +16,7 @@ class Esb(_PluginBase):
     # 插件图标
     plugin_icon = "Chatgpt_A.png"
     # 插件版本
-    plugin_version = "0.0.2"
+    plugin_version = "0.0.3"
     # 插件作者
     plugin_author = "songYu"
     # 作者主页
@@ -123,7 +123,7 @@ class Esb(_PluginBase):
         # 必须esb开头
         if not text.startswith("esb-"):
             return
-        logger.info(text)
+
         text = text.replace("esb-", "")
         logger.info(f"<UNK>: {text}")
 
