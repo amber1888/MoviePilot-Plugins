@@ -148,8 +148,7 @@ class Esb(_PluginBase):
             if res:
                 ret_json = res.json()
                 response = ""
-                albums = json.loads(ret_json["result"])
-                for album in albums:
+                for album in ret_json["result"]:
                     response += "%s:%s\n" % (album["album_id"], album["title"].decode("utf8"))
                 logger.info(f"返回：{response}")
                 self.post_message(channel=channel, title=response, userid=userid)
