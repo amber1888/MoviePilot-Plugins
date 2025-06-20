@@ -149,7 +149,7 @@ class Esb(_PluginBase):
                 ret_json = res.json()
                 response = ""
                 for album in ret_json["result"]:
-                    response += "%s:%s\n" % (album["album_id"], album["title"].decode("utf8"))
+                    response += "%s:%s\n" % (album["album_id"], album["title"].encode('utf-8').decode('unicode_escape'))
                 logger.info(f"返回：{response}")
                 self.post_message(channel=channel, title=response, userid=userid)
         except Exception as e:
