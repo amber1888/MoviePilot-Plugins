@@ -123,7 +123,9 @@ class Esb(_PluginBase):
         # 必须esb开头
         if not text.startswith("esb-"):
             return
+        logger.info(text)
         text = text.replace("esb-", "")
+        logger.info(f"<UNK>: {text}")
 
         client = JmClient(text)
         flag, response = client.download()
