@@ -124,22 +124,33 @@ class Esb(_PluginBase):
 
         if "?" not in text:
             logger.info(f"接收禁漫号: {text}。开始调用下载器")
-            data = {'album_id': str(text)}
-            res = RequestUtils().post(
+            data = {"album_id": str(text)}
+            res = RequestUtils(
+                timeout=10,
+                headers={
+                    "Content-Type": "application/json",
+                }
+            ).post_res(
                 url='http://192.168.1.96:18000/download-album',
-                json=data
+                data=data
             )
         else:
             text = text.replace("?", "")
             logger.info(f"开始搜索tag: {text}")
-            data = {'tag': text}
-            res = RequestUtils().post(
+            data = {"tag": text}
+            res = RequestUtils(
+                timeout=10,
+                headers={
+                    "Content-Type": "application/json",
+                }
+            ).post_res(
                 url='http://192.168.1.96:18000/query-album',
-                json=data
+                data=data
             )
+        logger.info(f"<UNK>: {res}")
         if res:
             ret_json = res.json()
-            self.post_message(channel=channel, title=json.dumps(ret_json['']), userid=userid)
+            self.post_message(channel=channel, title=json.dumps(ret_json['result']), userid=userid)
 
     def stop_service(self):
         """
