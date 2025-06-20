@@ -120,7 +120,10 @@ class Esb(_PluginBase):
         logger.info(f"接收用户消息: {text}")
         if not text:
             return
-        # TODO: 完善逻辑
+        # 必须esb开头
+        if not text.startswith("esb"):
+            return
+        text.replace("esb", "").replace("jm", "")
 
         client = JmClient(text)
         flag, response = client.download()
