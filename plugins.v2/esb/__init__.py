@@ -144,13 +144,16 @@ class Esb(_PluginBase):
                 json=data
             )
         logger.info(f"<UNK>: {res}")
-        if res:
-            ret_json = res.json()
-            response = ""
-            for album in ret_json["result"]:
-                response += "%s:%s\n" % (album["album"], album["title"].decode("utf8"))
-            logger.info(f"返回：{response}")
-            self.post_message(channel=channel, title=response, userid=userid)
+        try:
+            if res:
+                ret_json = res.json()
+                response = ""
+                for album in ret_json["result"]:
+                    response += "%s:%s\n" % (album["album"], album["title"].decode("utf8"))
+                logger.info(f"返回：{response}")
+                self.post_message(channel=channel, title=response, userid=userid)
+        except Exception as e:
+            logger.error(e)
 
     def stop_service(self):
         """
