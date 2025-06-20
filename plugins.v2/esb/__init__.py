@@ -1,3 +1,4 @@
+import json
 from typing import Any, List, Dict, Tuple
 
 from app.core.config import settings
@@ -5,7 +6,7 @@ from app.core.event import eventmanager, Event
 from app.log import logger
 from app.plugins import _PluginBase
 from app.schemas.types import EventType
-from app.plugins.esb.jm import JmClient
+from app.utils.http import RequestUtils
 
 
 class Esb(_PluginBase):
@@ -119,17 +120,28 @@ class Esb(_PluginBase):
         # 必须esb开头
         if not text.startswith("jm"):
             return
-
         text = text.replace("jm", "").replace("jm ", "")
-        logger.info(f"接收禁漫号: {text}。开始调用下载器")
 
-        client = JmClient(text)
-        flag, response = client.download()
-        logger.info(flag, response)
-        if flag:
-            self.post_message(channel=channel, title="success!", userid=userid)
+        if "?" not in text:
+            logger.info(f"接收禁漫号: {text}。开始调用下载器")
+            data = {'album_id': str(text)}
+            res = RequestUtils().post(
+                url='http://192.168.1.96:18000/download-album',
+                data={},
+                json=data
+            )
         else:
-            self.post_message(channel=channel, title=response, userid=userid)
+            text = text.replace("?", "")
+            logger.info(f"开始搜索tag: {text}")
+            data = {'tag': text}
+            res = RequestUtils().post(
+                url='http://192.168.1.96:18000/query-album',
+                data={},
+                json=data
+            )
+        if res:
+            ret_json = res.json()
+            self.post_message(channel=channel, title=json.dumps(ret_json), userid=userid)
 
     def stop_service(self):
         """
