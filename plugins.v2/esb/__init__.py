@@ -127,30 +127,27 @@ class Esb(_PluginBase):
             data = {"album_id": str(text)}
             res = RequestUtils(
                 timeout=10,
-                headers={
-                    "Content-Type": "application/json",
-                }
+                content_type="application/json"
             ).post_res(
                 url='http://192.168.1.96:18000/download-album',
-                data=data
+                json=data
             )
         else:
             text = text.replace("?", "")
             logger.info(f"开始搜索tag: {text}")
-            data = {"tag": text}
+            data = {"tag": str(text)}
             res = RequestUtils(
                 timeout=10,
-                headers={
-                    "Content-Type": "application/json",
-                }
+                content_type="application/json"
             ).post_res(
                 url='http://192.168.1.96:18000/query-album',
-                data=data
+                json=data
             )
         logger.info(f"<UNK>: {res}")
         if res:
             ret_json = res.json()
-            self.post_message(channel=channel, title=json.dumps(ret_json['result']), userid=userid)
+            logger.info(f"返回：{ret_json}")
+            self.post_message(channel=channel, title="success", userid=userid)
 
     def stop_service(self):
         """
