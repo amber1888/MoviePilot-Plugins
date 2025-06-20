@@ -474,11 +474,12 @@
     "name": "Esb",
     "description": "消息桥梁服务，信息转发至其他服务。",
     "labels": "消息转发",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "icon": "Chatgpt_A.png",
     "author": "songYu",
     "level": 1,
     "history": {
+      "0.0.4": "使用mp公用的方法调用",
       "0.0.3": "可用版本",
       "0.0.2": "修复问题，支持消息转发",
       "0.0.1": "初始版本"
