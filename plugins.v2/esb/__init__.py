@@ -127,7 +127,6 @@ class Esb(_PluginBase):
             data = {'album_id': str(text)}
             res = RequestUtils().post(
                 url='http://192.168.1.96:18000/download-album',
-                data={},
                 json=data
             )
         else:
@@ -136,12 +135,11 @@ class Esb(_PluginBase):
             data = {'tag': text}
             res = RequestUtils().post(
                 url='http://192.168.1.96:18000/query-album',
-                data={},
                 json=data
             )
         if res:
             ret_json = res.json()
-            self.post_message(channel=channel, title=json.dumps(ret_json), userid=userid)
+            self.post_message(channel=channel, title=json.dumps(ret_json['']), userid=userid)
 
     def stop_service(self):
         """
