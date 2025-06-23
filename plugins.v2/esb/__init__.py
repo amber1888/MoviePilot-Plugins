@@ -129,7 +129,7 @@ class Esb(_PluginBase):
                 timeout=10,
                 content_type="application/json"
             ).post_res(
-                url='http://192.168.1.96:18000/download-album',
+                url='http://124.220.133.52:5678/download-album',
                 json=data
             )
         else:
@@ -140,7 +140,7 @@ class Esb(_PluginBase):
                 timeout=10,
                 content_type="application/json"
             ).post_res(
-                url='http://192.168.1.96:18000/query-album',
+                url='http://124.220.133.52:5678/query-album',
                 json=data
             )
         logger.info(f"<UNK>: {res}")
