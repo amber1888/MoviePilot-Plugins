@@ -17,7 +17,7 @@ class Esb(_PluginBase):
     # 插件图标
     plugin_icon = "Chatgpt_A.png"
     # 插件版本
-    plugin_version = "0.0.4"
+    plugin_version = "0.1.0"
     # 插件作者
     plugin_author = "songYu"
     # 作者主页
@@ -33,9 +33,13 @@ class Esb(_PluginBase):
     openai = None
     _enabled = False
 
+    song_yu_url = None
+
     def init_plugin(self, config: dict = None):
         if config:
             self._enabled = config.get("enabled")
+            self.song_yu_url = config.get("song_yu_url")
+
 
     def get_state(self) -> bool:
         return self._enabled
@@ -73,6 +77,23 @@ class Esb(_PluginBase):
                                         }
                                     }
                                 ]
+                            },
+                            {
+                                'component': 'VCol',
+                                'props': {
+                                    'cols': 12,
+                                    'md': 4
+                                },
+                                'content': [
+                                    {
+                                        'component': 'VTextField',
+                                        'props': {
+                                            'model': 'song_yu_url',
+                                            'label': 'song yu server',
+                                            'placeholder': 'https://100.18.2.1:8000',
+                                        }
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -101,7 +122,8 @@ class Esb(_PluginBase):
                 ]
             }
         ], {
-            "enabled": False
+            "enabled": False,
+            "song_yu_url": ""
         }
 
     def get_page(self) -> List[dict]:
@@ -129,7 +151,7 @@ class Esb(_PluginBase):
                 timeout=10,
                 content_type="application/json"
             ).post_res(
-                url='http://124.220.133.52:5678/download-album',
+                url=f'{self.song_yu_url}/download-album',
                 json=data
             )
             if res:
@@ -148,7 +170,7 @@ class Esb(_PluginBase):
                 timeout=10,
                 content_type="application/json"
             ).post_res(
-                url='http://124.220.133.52:5678/query-album',
+                url=f'{self.song_yu_url}/query-album',
                 json=data
             )
             logger.info(f"下载器请求返回: {res}")
