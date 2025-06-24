@@ -17,7 +17,7 @@ class Esb(_PluginBase):
     # 插件图标
     plugin_icon = "Chatgpt_A.png"
     # 插件版本
-    plugin_version = "0.1.1"
+    plugin_version = "0.2.0"
     # 插件作者
     plugin_author = "songYu"
     # 作者主页
@@ -40,7 +40,7 @@ class Esb(_PluginBase):
         if config:
             self._enabled = config.get("enabled")
             self.song_yu_url = config.get("song_yu_url")
-            self.max_retry = int(config.get("max_retry"))
+            self.max_retry = 20
 
 
     def get_state(self) -> bool:
@@ -96,23 +96,6 @@ class Esb(_PluginBase):
                                         }
                                     }
                                 ]
-                            },
-                            {
-                                'component': 'VCol',
-                                'props': {
-                                    'cols': 12,
-                                    'md': 4
-                                },
-                                'content': [
-                                    {
-                                        'component': 'VTextField',
-                                        'props': {
-                                            'model': 'max_retry',
-                                            'label': 'max retry',
-                                            'placeholder': '30',
-                                        }
-                                    }
-                                ]
                             }
                         ]
                     },
@@ -142,8 +125,7 @@ class Esb(_PluginBase):
             }
         ], {
             "enabled": False,
-            "song_yu_url": "",
-            "max_retry": 20
+            "song_yu_url": ""
         }
 
     def get_page(self) -> List[dict]:
