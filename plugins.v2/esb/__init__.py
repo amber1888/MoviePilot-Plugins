@@ -34,7 +34,7 @@ class Esb(_PluginBase):
     _enabled = False
 
     song_yu_url = None
-    max_retry = 20
+    max_retry = 50
 
     def init_plugin(self, config: dict = None):
         if config:
@@ -167,7 +167,7 @@ class Esb(_PluginBase):
                         if ret_json.get("message") == "ok":
                             self.post_message(channel=channel, title="请求下载成功", userid=userid)
                             return True
-                    time.sleep(1)
+                    time.sleep(2)
                 except Exception as e:
                     logger.error(e)
         else:
