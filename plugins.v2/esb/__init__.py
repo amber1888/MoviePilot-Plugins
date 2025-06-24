@@ -1,4 +1,4 @@
-import json
+import time
 from typing import Any, List, Dict, Tuple
 
 from app.core.config import settings
@@ -159,8 +159,15 @@ class Esb(_PluginBase):
                         url=f'{self.song_yu_url}/download-album',
                         json=data
                     )
-                    if res.get("message") == "ok":
-                        self.post_message(channel=channel, title="请求下载成功", userid=userid)
+                    if res is None:
+                        self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
+                    else:
+                        ret_json = res.json()
+                        logger.info(f"<UNK>{i}<UNK>: {ret_json}")
+                        if ret_json.get("message") == "ok":
+                            self.post_message(channel=channel, title="请求下载成功", userid=userid)
+                            return True
+                    time.sleep(1)
                 except Exception as e:
                     logger.error(e)
         else:
