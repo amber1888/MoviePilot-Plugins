@@ -17,7 +17,7 @@ class Esb(_PluginBase):
     # 插件图标
     plugin_icon = "Chatgpt_A.png"
     # 插件版本
-    plugin_version = "0.1.0"
+    plugin_version = "0.1.1"
     # 插件作者
     plugin_author = "songYu"
     # 作者主页
@@ -34,11 +34,13 @@ class Esb(_PluginBase):
     _enabled = False
 
     song_yu_url = None
+    max_retry = 20
 
     def init_plugin(self, config: dict = None):
         if config:
             self._enabled = config.get("enabled")
             self.song_yu_url = config.get("song_yu_url")
+            self.max_retry = int(config.get("max_retry"))
 
 
     def get_state(self) -> bool:
@@ -94,6 +96,23 @@ class Esb(_PluginBase):
                                         }
                                     }
                                 ]
+                            },
+                            {
+                                'component': 'VCol',
+                                'props': {
+                                    'cols': 12,
+                                    'md': 4
+                                },
+                                'content': [
+                                    {
+                                        'component': 'VTextField',
+                                        'props': {
+                                            'model': 'max_retry',
+                                            'label': 'max retry',
+                                            'placeholder': '30',
+                                        }
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -123,7 +142,8 @@ class Esb(_PluginBase):
             }
         ], {
             "enabled": False,
-            "song_yu_url": ""
+            "song_yu_url": "",
+            "max_retry": 20
         }
 
     def get_page(self) -> List[dict]:
@@ -147,15 +167,20 @@ class Esb(_PluginBase):
         if "?" not in text:
             logger.info(f"接收禁漫号: {text}。开始调用下载器")
             data = {"album_id": str(text)}
-            res = RequestUtils(
-                timeout=10,
-                content_type="application/json"
-            ).post_res(
-                url=f'{self.song_yu_url}/download-album',
-                json=data
-            )
-            if res:
-                self.post_message(channel=channel, title="请求下载成功", userid=userid)
+
+            for i in range(self.max_retry):
+                try:
+                    res = RequestUtils(
+                        timeout=10,
+                        content_type="application/json"
+                    ).post_res(
+                        url=f'{self.song_yu_url}/download-album',
+                        json=data
+                    )
+                    if res.get("message") == "ok":
+                        self.post_message(channel=channel, title="请求下载成功", userid=userid)
+                except Exception as e:
+                    logger.error(e)
         else:
             text = text.replace("?", "")
             logger.info(f"开始搜索tag: {text}")
@@ -166,6 +191,7 @@ class Esb(_PluginBase):
             else:
                 data = {"tag": str(text), "page": page}
             logger.info("请求参数: %s" % data)
+
             res = RequestUtils(
                 timeout=10,
                 content_type="application/json"
