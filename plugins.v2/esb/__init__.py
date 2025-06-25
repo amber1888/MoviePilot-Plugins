@@ -34,13 +34,13 @@ class Esb(_PluginBase):
     _enabled = False
 
     song_yu_url = None
-    max_retry = 50
+    max_retry = 5
 
     def init_plugin(self, config: dict = None):
         if config:
             self._enabled = config.get("enabled")
             self.song_yu_url = config.get("song_yu_url")
-            self.max_retry = 20
+            self.max_retry = 5
 
 
     def get_state(self) -> bool:
@@ -146,18 +146,17 @@ class Esb(_PluginBase):
             return
         text = text.replace("jm", "").replace("jm ", "")
 
-        if "?" not in text:
+        if "tag" not in text:
             logger.info(f"接收禁漫号: {text}。开始调用下载器")
-            data = {"album_id": str(text)}
+            data = {"passwd": 0}
 
             for i in range(self.max_retry):
                 try:
                     res = RequestUtils(
-                        timeout=10,
-                        content_type="application/json"
-                    ).post_res(
-                        url=f'{self.song_yu_url}/download-album',
-                        json=data
+                        timeout=10
+                    ).get_res(
+                        url=f'{self.song_yu_url}/get_pdf/' + str(text),
+                        params=data
                     )
                     if res is None:
                         self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
@@ -171,30 +170,29 @@ class Esb(_PluginBase):
                 except Exception as e:
                     logger.error(e)
         else:
-            text = text.replace("?", "")
+            text = text.replace("tag", "").split()
             logger.info(f"开始搜索tag: {text}")
             page = 1
-            if "/" in text:
-                inputs = text.split("/")
-                data = {"tag": str(inputs[0]), "page": int(page)}
+            if ":" in text:
+                inputs = text.split(":")
+                data = {"query": str(inputs[0]), "page": int(inputs[1])}
             else:
-                data = {"tag": str(text), "page": page}
+                data = {"query": str(text), "page": page}
             logger.info("请求参数: %s" % data)
 
             res = RequestUtils(
-                timeout=10,
-                content_type="application/json"
-            ).post_res(
-                url=f'{self.song_yu_url}/query-album',
-                json=data
+                timeout=10
+            ).get_res(
+                url=f'{self.song_yu_url}/search',
+                params=data
             )
             logger.info(f"下载器请求返回: {res}")
             try:
                 if res:
                     ret_json = res.json()
                     response = ""
-                    for album in ret_json["result"]:
-                        response += "%s:%s\n" % (album["album_id"], album["title"])
+                    for album in ret_json["data"]["results"]:
+                        response += "%s:%s\n" % (album["id"], album["title"])
                     logger.info(f"返回：{response}")
                     self.post_message(channel=channel, title=response, userid=userid)
             except Exception as e:
