@@ -160,12 +160,12 @@ class Esb(_PluginBase):
                     )
                     logger.info(f"返回:{res}")
                     logger.info(type(res))
-                    if res.status_code == 200:
-                        self.post_message(channel=channel, title="请求下载成功", userid=userid)
-                        return True
-                    else:
-                        self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
-                        time.sleep(2)
+                    if res:
+                        if res.status_code == 200:
+                            self.post_message(channel=channel, title="请求下载成功", userid=userid)
+                            return True
+                    self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
+                    time.sleep(2)
                 except Exception as e:
                     logger.error(e)
         else:
@@ -186,13 +186,14 @@ class Esb(_PluginBase):
                 params=data
             )
             try:
-                if res.status_code == 200:
-                    ret_json = res.json()
-                    response = ""
-                    for album in ret_json["data"]["results"]:
-                        response += "%s:%s\n" % (album["id"], album["title"])
-                    self.post_message(channel=channel, title=response, userid=userid)
-                    return True
+                if res:
+                    if res.status_code == 200:
+                        ret_json = res.json()
+                        response = ""
+                        for album in ret_json["data"]["results"]:
+                            response += "%s:%s\n" % (album["id"], album["title"])
+                        self.post_message(channel=channel, title=response, userid=userid)
+                        return True
                 return None
             except Exception as e:
                 logger.error(e)
