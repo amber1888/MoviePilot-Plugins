@@ -158,6 +158,8 @@ class Esb(_PluginBase):
                         url=f'{self.song_yu_url}/get_pdf/' + str(text),
                         params=data
                     )
+                    logger.info(f"返回:{res}")
+                    logger.info(type(res))
                     if res is None:
                         self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
                     else:
