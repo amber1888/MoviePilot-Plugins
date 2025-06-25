@@ -134,16 +134,16 @@ class Esb(_PluginBase):
     @eventmanager.register(EventType.UserMessage)
     def talk(self, event: Event):
         if not self._enabled:
-            return
+            return None
         text = event.event_data.get("text")
         userid = event.event_data.get("userid")
         channel = event.event_data.get("channel")
         logger.info(f"接收用户消息: {text}")
         if not text:
-            return
+            return None
         # 必须esb开头
         if not text.startswith("jm"):
-            return
+            return None
         text = text.replace("jm", "").replace("jm ", "")
 
         if "tag" not in text:
@@ -160,15 +160,12 @@ class Esb(_PluginBase):
                     )
                     logger.info(f"返回:{res}")
                     logger.info(type(res))
-                    if res is None:
-                        self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
+                    if res.status_code == 200:
+                        self.post_message(channel=channel, title="请求下载成功", userid=userid)
+                        return True
                     else:
-                        ret_json = res.json()
-                        logger.info(f"<UNK>{i}<UNK>: {ret_json}")
-                        if ret_json.get("message") == "ok":
-                            self.post_message(channel=channel, title="请求下载成功", userid=userid)
-                            return True
-                    time.sleep(2)
+                        self.post_message(channel=channel, title=f'第{i}次下载失败，重试中......', userid=userid)
+                        time.sleep(2)
                 except Exception as e:
                     logger.error(e)
         else:
@@ -188,17 +185,18 @@ class Esb(_PluginBase):
                 url=f'{self.song_yu_url}/search',
                 params=data
             )
-            logger.info(f"下载器请求返回: {res}")
             try:
-                if res:
+                if res.status_code == 200:
                     ret_json = res.json()
                     response = ""
                     for album in ret_json["data"]["results"]:
                         response += "%s:%s\n" % (album["id"], album["title"])
-                    logger.info(f"返回：{response}")
                     self.post_message(channel=channel, title=response, userid=userid)
+                    return True
+                return None
             except Exception as e:
                 logger.error(e)
+                return None
 
     def stop_service(self):
         """
