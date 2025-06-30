@@ -195,7 +195,7 @@ class Esb(_PluginBase):
                     if res:
                         if res.status_code == 200:
                             file_name = self.parse_content_disposition(res.headers["Content-Disposition"])
-                            local_filename = os.path.join(self._download_path, file_name)
+                            local_filename = os.path.join(self.download_path, file_name)
                             logger.info(f"文件下载路径：{local_filename}")
                             with open(local_filename, "wb") as f:
                                 for chunk in res.iter_content(chunk_size=8192):
